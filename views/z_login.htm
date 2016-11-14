@@ -1,0 +1,46 @@
+<br/>
+<br/>
+<div class="frontpage">
+<div class="thumbnail col-lg-offset-2 col-lg-8 well">
+<form class="form-horizontal" action="/login" method="post">
+  <fieldset>
+    <legend>Sign In</legend>
+    <div class="form-group">Coming Soon....</div>
+    <div class="form-group">
+      <label class="col-lg-3 control-label">Email</label>
+      <div class="col-lg-9">
+        <input type="text" class="form-control" name="cred" placeholder="Email" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-3 control-label">Password</label>
+      <div class="col-lg-9">
+        <input type="password" class="form-control" name="password" placeholder="Password" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-3 control-label">Position</label>
+      <div class="col-lg-9">
+        <select class="form-control" name="position" required>
+			<option value="">Please select</option>
+			<option value="admin">Admin</option>
+			<option value="manager">Manager</option>
+			<option value="coordinator">Coordinator</option>
+			<option value="casual">Casual</option>
+		</select>
+      </div>
+    </div>
+	<div class="form-group">
+      <div class="col-lg-9 col-lg-offset-3">
+        <button type="reset" class="btn btn-default">Cancel</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <br/><br/>
+		<a href="/register" class="text-info"><span class="glyphicon glyphicon-user"></span> Register</a>&nbsp;&nbsp;
+		<a href="/forgotPassword" class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> Forgot Password</a>
+        <br/><br/><a href="/" class="text-warning"><span class="glyphicon glyphicon-home"></span> Back to main page</a>
+      </div>
+    </div>
+  </fieldset>
+</form>
+</div>
+</div>

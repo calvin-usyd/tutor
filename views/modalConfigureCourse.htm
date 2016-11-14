@@ -1,0 +1,196 @@
+<div class="modal fade" id="modalConfigureCourse" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Configure Course</h4>
+      </div>
+      <div class="modal-body">
+		<div id="alertHolderModal">
+			<div class="alert alert-dismissible alert-danger fade in {{isset(@err_message) ?:hide;}}" id="alertDanger">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="message">{{@err_message}}</div>
+			</div>
+
+			<div class="alert alert-dismissible alert-success fade in {{isset(@message) ?:hide;}}" id="alertSuccess">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="message">{{@message}}</div>
+			</div> 
+			
+			<div class="alert alert-dismissible alert-warning fade in {{isset(@warn_message) ?:hide;}}" id="alertWarning">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="message">{{@warn_message}}</div>
+			</div> 
+		</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Site Name</label>
+			  <div class="col-lg-6">
+				<div class="form-control" id="siteName"></div>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Course Name</label>
+			  <div class="col-lg-6">
+				<div class="form-control" id="courseName"></div>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Unit Of Study</label>
+			  <div class="col-lg-6">
+				<div class="form-control" id="unitOfStudy"></div>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Course Coordinator</label>
+			  <div class="col-lg-6">
+				<div class="form-control">{{@SESSION.fname}} {{@SESSION.lname}}</div>
+			  </div>
+			</div>
+		</form>
+		<div class="hotZoom row" id="hotConfigureCourse"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="modalConfigureCourseBtn">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function(){
+//SAVE COURSES IN EXCEL DATA
+$('#modalConfigureCourseBtn').bind('click', function(){
+	if (!courseCasualHasChanges){
+		alert('No changes made on the data!');
+		return;
+	}
+	var postData = _.map(cCasualData, function(cCObj){
+		return {
+			'courseCasualLongId':cCObj.courseCasualLongId, 
+			'lecturer':cCObj.lecturer, 
+			'teachingMethod':cCObj.teachingMethod, 
+			'hours':cCObj.hours, 
+			'rateCode':cCObj.rateCode, 
+			'hourRate':cCObj.hourRate, 
+			'cost':(cCObj.hours * cCObj.hourRate).toFixed(2), 
+			'delete':cCObj.delete
+		}
+	});
+	$.post(
+		'/coordinator/courseCasualAddEditDel/'+courseLongIdVal,
+		JSON.stringify(postData),
+		successLoadCourseCasualList,
+		'json'
+	);
+});	
+});
+
+var courseCasualHasChanges=false;
+var casualData = [];
+var cCasualData = [];
+var courseLongIdVal = '';
+var hourlyRateObj = {
+	 '54.67':'AO1',
+	 '45.73':'AO2',
+	  '64.1':'MO3',
+	 '54.67':'MO4',	
+	 '45.73':'MO5',	
+	'320.37':'PO1',	
+	'256.31':'PO2',	
+	'192.23':'PO3',	
+	'128.16':'PO4',	
+	'163.97':'TU1',	
+	 '137.1':'TU2',	
+	'109.36':'TU3',	
+	 '91.41':'TU4'
+}
+var rateCodeObj = {
+	'AO1': '54.67',
+	'AO2': '45.73',
+	'MO3':  '64.1',
+	'MO4': '54.67',	
+	'MO5': '45.73',	
+	'PO1':'320.37',	
+	'PO2':'256.31',	
+	'PO3':'192.23',	
+	'PO4':'128.16',	
+	'TU1':'163.97',	
+	'TU2': '137.1',	
+	'TU3':'109.36',	
+	'TU4': '91.41'
+}
+var
+excelHeaderCourseCasual=[
+	"Casual",
+	"Teaching Method",
+	"Hours",
+	"Rate Code",
+	"hour Rate ($/hr)",
+	"Cost ($)",
+	"Sub Total ($)",
+	cm.headerChecker('delete','Delete', cCasualData)
+],
+excelColumnCourseCasual=[],
+afterChangeCourseCasual = function(changes, source) {
+	if (changes){
+		courseCasualHasChanges = true;
+	}
+};
+var hotCourses = cm.initHotExcel($('#hotConfigureCourse')[0], excelHeaderCourseCasual, excelColumnCourseCasual, afterChangeCourseCasual);
+var indHotCoursesDel = cm.createIndicatorHot('delete');
+
+Handsontable.Dom.addEvent($('#hotConfigureCourse')[0], 'mouseup', function (event) {
+	cm.processHotChecker('delete', event, cCasualData, hotCourses, indHotCoursesDel);
+});
+
+var loadCourseCasuals = function(courseLongId, siteName, courseName, unitOfStudy ){
+	$.post(
+		'/coordinator/casualList',
+		null,
+		successLoadCasualList,
+		'json'
+	)
+	courseLongIdVal = courseLongId;
+	$('#siteName').html(siteName);
+	$('#courseName').html(courseName);
+	$('#unitOfStudy').html(unitOfStudy);
+	$.post(
+		'/coordinator/courseCasualList/'+courseLongId,
+		null,
+		successLoadCourseCasualList,
+		'json'
+	)
+}
+var successLoadCasualList = function(data){
+	casualData = data;
+}
+var successLoadCourseCasualList = function(data){
+	if (data.length == 0){
+		data = [{}];
+	}
+	hotCourses.updateSettings({
+        columns: [
+			//{data:"lecturer",width: 20, type: 'dropdown', source:[]},
+			{data:"lecturer",width: 20, editor: 'select',selectOptions: _.fromPairs(_.map(casualData, i => [i.email, i.name]))},
+			{data:"teachingMethod",width: 20},
+			{data:"hours",width: 10, type:'numeric'},
+			{data:"rateCode",width: 20, editor: 'select',selectOptions: rateCodeObj},
+			{data:"hourRate",width: 20, editor: 'select',selectOptions: hourlyRateObj},
+			{data:"cost",width: 10, type:'numeric', format: '$0.00', readOnly: true},
+			{data:'subTotal',width:20, type:'numeric', format: '$0.00', readOnly: true},
+			{data:'delete',width:20, type: 'checkbox'}
+		]
+    });
+	var totalCost = 0;
+	_.each(data, function(obj){
+		totalCost += parseFloat(obj.cost);
+	})
+	
+	data[data.length-1].subTotal = totalCost;
+	cCasualData = data;
+	hotCourses.loadData(cCasualData);
+	courseCasualHasChanges = false;
+}
+</script>

@@ -1,0 +1,75 @@
+<form class="form-horizontal" method="post" action="/casual/profileEdit">
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Role</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="role" placeholder="role" value="{{@data.role}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Have PhD</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="havePhD" placeholder="Have PhD" value="{{@data.havePhD}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Title</label>
+	  <div class="col-lg-6">
+		<select class="form-control" name="staffTitle" required>
+			<option value="">Select Title</option>
+			<option value="Dr" {{(@data.staffTitle == 'Dr')?'selected':'';}}>Dr</option>
+			<option value="Mr" {{(@data.staffTitle == 'Mr')?'selected':'';}}>Mr</option>
+			<option value="Mrs" {{(@data.staffTitle == 'Mrs')?'selected':'';}}>Mrs</option>
+			<option value="Ms" {{(@data.staffTitle == 'Ms')?'selected':'';}}>Ms</option>
+			<option value="Miss" {{(@data.staffTitle == 'Miss')?'selected':'';}}>Miss</option>
+		</select>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Date Of Birth</label>
+	  <div class="col-lg-6">
+		<input type="date" class="form-control" name="staffDOB" placeholder="Date Of Birth" value="{{@data.staffDOB}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Staff ID</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="employeeID" placeholder="Staff ID" value="{{@data.employeeID}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Address</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="address" placeholder="Address" value="{{@data.address}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Suburb</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="suburb" placeholder="Suburb" value="{{@data.suburb}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">State</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="state" placeholder="state" value="{{isset(@data.state) ? @data.state : 'NSW';}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Postcode</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="postcode" placeholder="Postcode" value="{{@data.postcode}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label">Phone</label>
+	  <div class="col-lg-6">
+		<input type="text" class="form-control" name="phone" placeholder="Phone" value="{{@data.phone}}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label class="col-lg-4 control-label"></label>
+	  <div class="col-lg-6">
+		<button type="submit" class="btn btn-primary" >Save changes</button>
+	  </div>
+	</div>
+</form>

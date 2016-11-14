@@ -1,0 +1,167 @@
+<div class="modal fade" id="modalProfile" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Profile</h4>
+      </div>
+      <div class="modal-body">
+		<div id="alertHolderModal">
+			<div class="alert alert-dismissible alert-danger fade in {{isset(@err_message) ?:hide;}}" id="alertDanger">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="message">{{@err_message}}</div>
+			</div>
+
+			<div class="alert alert-dismissible alert-success fade in {{isset(@message) ?:hide;}}" id="alertSuccess">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="message">{{@message}}</div>
+			</div> 
+			
+			<div class="alert alert-dismissible alert-warning fade in {{isset(@warn_message) ?:hide;}}" id="alertWarning">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="message">{{@warn_message}}</div>
+			</div> 
+		</div>
+        <form class="form-horizontal" id="accountForm">
+			<!--div class="form-group">
+			  <label class="col-lg-4 control-label">Id</label>
+			  <div class="col-lg-8">
+				<input type="text" class="form-control" name="id" placeholder="Id" disabled="">
+			  </div>
+			</div-->
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">First Name</label>
+			  <div class="col-lg-8">
+				<input type="text" class="form-control" name="fname" placeholder="First Name" required>
+			  </div>
+			</div>
+			<!--div class="form-group">
+			  <label class="col-lg-4 control-label">Middle Name</label>
+			  <div class="col-lg-8">
+				<input type="text" class="form-control" name="mname" placeholder="Middle Name" required>
+			  </div>
+			</div-->
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Last Name</label>
+			  <div class="col-lg-8">
+				<input type="text" class="form-control" name="lname" placeholder="Last Name" required>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Email</label>
+			  <div class="col-lg-8">
+				<input type="email" class="form-control" name="email" placeholder="Email" disabled>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label"></label>
+			  <div class="col-lg-8">
+				<div class="checkbox">
+					<label class="">
+						<input type="checkbox" name="changePassword" value="0">Change Password
+					</label>
+				</div>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Current Password</label>
+			  <div class="col-lg-8">
+				<input type="password" class="form-control" name="currentPassword" disabled="">
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">New Password</label>
+			  <div class="col-lg-8">
+				<input type="password" class="form-control" name="newPassword" disabled="">
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Confirm New Password</label>
+			  <div class="col-lg-8">
+				<input type="password" class="form-control" name="confirmNewPassword" disabled="">
+			  </div>
+			</div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="modalProfileBtn">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function(){
+	var id = '#modalProfile';
+	
+	cm.setInVal(id, 'currentPassword', '');
+	cm.setInVal(id, 'newPassword', '');
+	cm.setInVal(id, 'confirmNewPassword', '');
+	
+	$.ajax({
+		url:'/profile/view',
+		dataType: 'json',
+		success: function(json){
+			//console.log(json);
+			cm.setInVal(id, 'id', json['id']);
+			cm.setInVal(id, 'fname', json['fname']);
+			cm.setInVal(id, 'lname', json['lname']);
+			cm.setInVal(id, 'email', json['email']);
+		}
+	});
+	//cm.popUp(id);
+	
+	$('#modalProfile input[name=changePassword]').bind('click', function(){
+		var id = '#modalProfile';
+		var oldP = $(id + ' input[name=currentPassword]');
+		var newP = $(id + ' input[name=newPassword]');
+		var cNewP = $(id + ' input[name=confirmNewPassword]');
+		
+		if (cm.inCheckVal(id, 'changePassword') == '0'){
+			oldP.removeAttr('disabled');
+			newP.removeAttr('disabled');
+			cNewP.removeAttr('disabled');
+			cm.setInVal(id, 'changePassword', '1');
+		}else{
+			oldP.attr('disabled', '');
+			newP.attr('disabled', '');
+			cNewP.attr('disabled', '');
+			
+			oldP.val('');
+			newP.val('');
+			cNewP.val('');
+			cm.setInVal(id, 'changePassword', '0');
+		}
+	});
+	
+	$('#modalProfileBtn').bind('click', function(){
+		var id = '#modalProfile';
+		var postData = {
+			fname:cm.inVal(id, 'fname'),
+			lname:cm.inVal(id, 'lname'),
+			email:cm.inVal(id, 'email'),
+			changePassword:cm.inVal(id, 'changePassword'),
+			currentPassword:cm.inVal(id, 'currentPassword'),
+			newPassword:cm.inVal(id, 'newPassword'),
+			confirmNewPassword:cm.inVal(id, 'confirmNewPassword')
+		};
+		console.log(postData);
+		if (postData['newPassword'] != postData['confirmNewPassword']){
+			cm.alertModal('Danger','New password and confirm new password are not same!');
+		}else{
+			$.post(
+				'profile/edit',
+				postData,
+				profileEditCompleted,
+				"json"
+			);
+		}
+	});
+	
+	function profileEditCompleted(json){
+		if (json.length > 0)
+			cm.alertModal(json[0], json[1]);
+	}
+});
+</script>

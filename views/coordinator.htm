@@ -1,0 +1,62 @@
+<include href="modalConfigureCourse.htm"/>
+<table class="table table-striped table-hover " id="courseTbl">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Site Name</th>
+      <th>Course Name</th>
+      <th>Unit of Course</th>
+      <th>Edit</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<script>
+$(function(){
+var successLoadCourseList = function(data){
+	var courseTbl = $('#courseTbl tbody');
+	courseTbl.empty();
+	
+	_.forEach(data, function(cObj, ind){
+		var tr=$('<tr>');
+		
+		var td=$('<td>');
+		td.html(ind+1);
+		td.appendTo(tr);
+		
+		var td=$('<td>');
+		td.html(cObj.siteName);
+		td.appendTo(tr);
+		
+		var td=$('<td>');
+		td.html(cObj.courseName);
+		td.appendTo(tr);
+		
+		var td=$('<td>');
+		td.html(cObj.unitOfStudy);
+		td.appendTo(tr);
+		
+		$editBtn = $('<div>');
+		$editBtn
+		.html('<span class="glyphicon glyphicon-edit"></span> Edit')
+		.addClass('btn btn-sm btn-default')
+		.attr('data-toggle', 'modal')
+		.attr('data-target', "#modalConfigureCourse")
+		.attr('onclick', "loadCourseCasuals('"+cObj.courseLongId+"','"+cObj.siteName+"','"+cObj.courseName+"','"+cObj.unitOfStudy+"')")
+		;
+		
+		var td=$('<td>');
+		td.html($editBtn);
+		td.appendTo(tr);
+		
+		tr.appendTo(courseTbl);
+	});
+}
+$.post(
+	'/coordinator/courseList',
+	null,
+	successLoadCourseList,
+	'json'
+)
+});
+</script>

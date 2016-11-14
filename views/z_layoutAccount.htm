@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+	<title>{{isset(@title) ? @title : 'usyd Tutor'}} | Quantumfi</title>
+	<!-- Description, Keywords and Author -->
+	<meta name="keywords" content="usyd Tutor">
+	<meta name="author" content="Quantumfi">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="shortcut icon" href="/img/logo.png">
+	<!--link href="/views/css/main.css" rel="stylesheet"-->
+	
+	<link rel="stylesheet" href="//quantumfi.net/shared/bootstrap/css/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" href="//bootswatch.com/spacelab/bootstrap.min.css">
+	<link rel="stylesheet" href="//handsontable.com/dist/handsontable.full.css" media="screen">
+	<style>
+	.hotZoom{
+	  zoom:0.75;
+	}
+	</style>
+</head>
+
+<body>
+	<script src="//quantumfi.net/shared/jquery.js"></script>
+	<script src="//quantumfi.net/shared/bootstrap/js/bootstrap.min.js"></script>
+	<script src="//quantumfi.net/shared/lodash.min.js"></script>
+	<script src="//handsontable.com/dist/handsontable.full.min.js"></script>
+	<script>
+	$(function() {
+		var loadjscssfile = function(filename, filetype){
+			filename = filename + ('?' + (new Date()).getMilliseconds());
+
+			if (filetype=="js"){ //if filename is a external JavaScript file
+				var fileref=document.createElement('script')
+				fileref.setAttribute("type","text/javascript")
+				fileref.setAttribute("src", filename)
+			}
+			else if (filetype=="css"){ //if filename is an external CSS file
+				var fileref=document.createElement("link")
+				fileref.setAttribute("rel", "stylesheet")
+				fileref.setAttribute("type", "text/css")
+				fileref.setAttribute("href", filename)
+			}
+			if (typeof fileref!="undefined")
+				document.getElementsByTagName("head")[0].appendChild(fileref)
+		}
+		//loadjscssfile("js/{{@SESSION.position}}_main.js", "js");
+	});
+	</script>
+	
+	<script>
+	QF = {};
+	QF.Common = function(){
+	  return Object.freeze({
+		setInVal : function(id, name, val){
+			return $(id + ' input[name='+name+']').val(val);
+		},
+		setSelVal : function(id, name, val){
+			return $(id + ' select[name='+name+']').val(val);
+		},
+		taVal : function(id, name){
+			return $(id + ' textarea[name='+name+']').val();
+		},
+		inVal : function(id, name){
+			return $(id + ' input[name='+name+']').val();
+		},
+		inSelVal : function(id, name){
+			return $(id + ' select[name='+name+']').val();
+		},
+		inCheckVal : function(id, name){
+			return $(id + ' input[name='+name+']:checked').val();
+		},
+		inValEmpty : function(id, nameArray){
+			for (var x=0, len=nameArray.length; x<len; ++x){
+				$(id + ' input[name='+nameArray[x]+']').val('');
+			}
+		},
+		alert : function(type, message){
+			var alertUp = $('#alert'+type).clone();
+			alertUp.removeClass('hide');
+			alertUp.find('.message').html(message);
+			alertUp.appendTo($('#alertHolder'));	
+			/*alertUp.fadeTo(5000, 3500).slideUp(3500, function(){
+				alertUp.alert('close');
+			});*/
+		},
+		alertModal : function(type, message){
+			var alertUp = $('#alert'+type).clone();
+			alertUp.removeClass('hide');
+			alertUp.find('.message').html(message);
+			alertUp.appendTo($('#alertHolderModal'));	
+			/*alertUp.fadeTo(5000, 2500).slideUp(2500, function(){
+				alertUp.alert('close');
+			});*/
+		},
+		initHotExcel : function(container, colHeaders, columns, afterChange){
+			return new Handsontable(container, {
+				stretchH: "all",
+				sortIndicator: true,
+				//columnSorting: true,//SORTING DISABLED COZ CHANGES' INDEX ARE WRONG AFTER SORT (UNLESS THE DATAARRAY WAS SORTED TOO TO MATCH THE INDEX)
+				search: true,
+				rowHeaders: true,
+				colHeaders: colHeaders,
+				columns: columns,
+				afterChange: afterChange
+			});
+		},
+		createIndicatorHot : function(type){
+			var incicatorHot = $('<div class="hot'+type+'">');
+			return  incicatorHot
+					  .attr('data-hot', '')
+					  .appendTo($('body'));
+		},
+		processHotChecker : function(type, event, recordData, hotObj, indicatorHot){
+			if (event.target.nodeName == 'INPUT' && event.target.className == 'checker'+type) {
+			  if (indicatorHot.attr('data-hot') == 'checked'){
+				indicatorHot.attr('data-hot', '');
+				current = false;
+			  }else{
+				indicatorHot.attr('data-hot', 'checked');
+				current = true;
+			  }
+			  for (var i = 0, ilen = recordData.length; i < ilen; i++) {
+				recordData[i][type] = current;
+			  }
+			  hotObj.render();
+			}
+		},
+		headerChecker : function(classN, labelN, recordData){
+			var isChecked = function(classN, recordData) {
+				for (var i = 0, ilen = recordData.length; i < ilen; i++) {
+					if (!recordData[i][classN]) {
+						return false;
+					}
+				}
+				return (recordData.length != 0);
+			}
+			var txt = "<input type='checkbox' id='checker"+classN+"' class='checker"+classN+"' ";
+			txt += isChecked(classN, recordData) ? 'checked="checked"' : '';
+			txt += "> "+labelN;
+			return txt;	
+		}
+
+	  });
+	}
+	var cm = new QF.Common();
+	</script>
+	
+	<style>
+	table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+		content: " \25B4\25BE" 
+	}
+	table.sortable tbody {
+		counter-reset: sortabletablescope;
+	}
+	table.sortable thead tr::before {
+		content: "";
+		display: table-cell;
+	}
+	table.sortable tbody tr::before {
+		content: counter(sortabletablescope);
+		counter-increment: sortabletablescope;
+		display: table-cell;
+		padding: 10px 0;
+	}
+	.modal-dialog{
+		width: 80%;
+	}
+	</style>
+	<div class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/{{@SESSION.position}}" class="navbar-brand"><img src="//quantumfi.net/img/tutor.png" class="" style="top: -10px; position: relative;" width="86px"/></a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li>
+              <a class="">Hi, {{@SESSION.fname}} {{@SESSION.lname}} ({{@SESSION.user}} - {{@SESSION.position}})!</a>
+            </li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            <li class="{{(@navTab == 'home') ? 'active' : '';}}"><a href="/{{@SESSION.position}}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+            <li><a href="" data-toggle="modal" data-target="#modalProfile" onclick=""><span class="glyphicon glyphicon-user"></span> Account</a></li>
+            <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+	<main class="container" id="preps">
+	  <div id="alertHolder">
+		<div class="alert alert-dismissible alert-danger fade in {{isset(@err_message) ?:hide;}}" id="alertDanger">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<div class="message">{{@err_message}}</div>
+		</div>
+
+		<div class="alert alert-dismissible alert-success fade in {{isset(@message) ?:hide;}}" id="alertSuccess">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<div class="message">{{@message}}</div>
+		</div> 
+		
+		<div class="alert alert-dismissible alert-warning fade in {{isset(@warn_message) ?:hide;}}" id="alertWarning">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<div class="message">{{@warn_message}}</div>
+		</div> 
+	  </div>
+	  
+	  <div class="row">
+		<article class="col-lg-12">
+			<include href="{{ @inc }}" />
+			<include href="z_modalProfile.htm" />
+		</article>
+	  </div>
+	  
+	</main>
+</body>
+</html>

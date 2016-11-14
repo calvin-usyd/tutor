@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="btn btn-info btn-lg pull-right" id="courseAddEditBtn"><span class="glyphicon glyphicon-floppy-saved"></span> Save Excel Table</div>&nbsp;
+</div>
+<div id="hotCourses"></div>
+<script>
+$(function(){
+console.log('a');
+var courseHasChanges=false;
+var courseData=[];
+function successLoadCourseList(data){
+	if (data.length == 0){
+		data = [{}];
+	}
+	courseData = data;
+	hotCourses.loadData(courseData);
+	courseHasChanges = false;
+}
+$.post(
+	'/admin/courseList',
+	null,
+	successLoadCourseList,
+	'json'
+);
+var
+excelHeaderCourse=[
+	"site Name",
+	"Course Name",
+	"unitOfStudy",
+	"coordinatorEmail",
+	headerChecker('status','Delete')
+],
+excelColumnCourse=[
+	//{data:"courseLongId",width: 90},
+	{data:"siteName",width: 100},
+	{data:"courseName",width: 100},
+	{data:"unitOfStudy",width: 100},
+	{data:"coordinatorEmail",width: 100},
+	{data:'status', type: 'checkbox'}
+],
+afterChangeCourse = function(changes, source) {
+	if (changes){
+		courseHasChanges = true;
+	}
+};
+var hotCourses = cm.initHotExcel($('#hotCourses')[0], excelHeaderCourse, excelColumnCourse, afterChangeCourse);
+
+function headerChecker(classN, labelN){
+	var txt = "<input type='checkbox' id='checker"+classN+"' class='checker"+classN+"' ";
+	txt += isChecked(classN) ? 'checked="checked"' : '';
+	txt += "> "+labelN;
+	return txt;	
+}
+function isChecked(classN) {
+	for (var i = 0, ilen = courseData.length; i < ilen; i++) {
+		if (!courseData[i][classN]) {
+			return false;
+		}
+	}
+	return (courseData.length != 0);
+}
+
+//SAVE COURSES IN EXCEL DATA
+$('#courseAddEditBtn').bind('click', function(){
+	$.post(
+		'/coordinator/courseCasualAddEditDel',
+		JSON.stringify(courseData),
+		successLoadCourseList,
+		'json'
+	);
+});	
+});
+</script>
