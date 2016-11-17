@@ -19,20 +19,13 @@ class TutorAdminController extends TutorController
 		$f3->reroute('/admin');
 	}
 	
-	function courseList($f3){
-		$this->echoJson(array_map(
-			function($val){
-				return array(
-					'courseLongId'=>$val['courseLongId'], 
-					'siteName'=>$val['siteName'], 
-					'courseName'=>$val['courseName'], 
-					'unitOfStudy'=>$val['unitOfStudy'], 
-					'coordinatorEmail'=>$val['coordinatorEmail'],
-					'status'=>false
-				);
-			}, 
-			$this->course->all()
-		));
+	function courseList($f3){		
+		$this->echoJson(
+			$this->f3RecToArr(
+				$this->course->all(),
+				$this->course->fields()
+			)
+		);
 	}
 	
 	function courseAddEditDel($f3){
@@ -52,10 +45,10 @@ class TutorAdminController extends TutorController
 						$this->course->delete('courseLongId', $rec['courseLongId']);
 						
 					}else{//OTHERWISE SET INACTIVE.
-						$f3->set('POST.status', 'inactive');
+						$f3->set('POST.status', false);
 					}
 				}else{
-					$f3->set('POST.status', 'active');
+					$f3->set('POST.status', true);
 				}
 			
 				$f3->set('POST.siteName', $rec['siteName']);

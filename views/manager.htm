@@ -1,0 +1,100 @@
+<div class="row">
+  <div class="btn btn-info btn-lg pull-right" id="casualAcademicAddEditBtn"><span class="glyphicon glyphicon-floppy-saved"></span> Save Excel Table</div>&nbsp;
+</div>
+<div id="hotCasualAcademic"></div>
+<script>
+$(function(){
+var casualAcademicHasChanges=false;
+var casualAcademicData=[];
+function successLoadCasualAcademicList(data){
+	if (data.length == 0){
+		data = [{}];
+	}
+	casualAcademicData = data;
+	hotCasualAcademic.loadData(casualAcademicData);
+	casualAcademicHasChanges = false;
+}
+$.post(
+	'/manager/casualAcademicList',
+	null,
+	successLoadCasualAcademicList,
+	'json'
+);
+var
+excelHeaderCasualAcademic=[
+	"New/Extension",
+	"Role",
+	"Have PhD",
+	"Staff Title",
+	"Staff DOB",
+	"Staff ID",
+	"Staff Name",
+	"Address",
+	"Suburb",
+	"State",
+	"Postcode",
+	"Phone",
+	"Staff Email",
+	"Date of Contract",
+	"Start Date",
+	"finish Date",
+	"Supervisor Name",
+	"Phone Extension",
+	"Supervisor Email",
+	"Teaching Method",
+	"Unit Of Study",
+	"Pay Detail",
+	"RC",
+	"PC",
+	"analysis"
+],
+excelColumnCasualAcademic=[
+	//{data:"caLongId",width: 90},//hidden from view
+	{data:"newOrExtension",width: 100},
+	{data:"role",width: 100,readOnly: true},
+	{data:"havePhD",width: 100,readOnly: true},
+	{data:"staffTitle",width: 100,readOnly: true},
+	{data:"staffDOB",width: 100,readOnly: true},
+	{data:"employeeID",width: 100,readOnly: true},
+	{data:"casualName",width: 100,readOnly: true},
+	{data:"address",width: 100,readOnly: true},
+	{data:"suburb",width: 100,readOnly: true},
+	{data:"state",width: 100,readOnly: true},
+	{data:"postcode",width: 100,readOnly: true},
+	{data:"phone",width: 100,readOnly: true},
+	{data:"email",width: 100,readOnly: true},
+	{data:"dateContract",width: 100},
+	{data:"startDate",width: 100},
+	{data:"finishDate",width: 100},
+	{data:"supervisorName",width: 100,readOnly: true},
+	{data:"phoneExtension",width: 100,readOnly: true},
+	{data:"coordinatorEmail",width: 100,readOnly: true},
+	{data:"teachingMethod",width: 100,readOnly: true},
+	{data:"unitOfStudy",width: 100,readOnly: true},
+	{data:"payDetail",width: 100,readOnly: true},
+	{data:"rc",width: 100},
+	{data:"pc",width: 100},
+	{data:"analysis",width: 100}
+],
+afterChangeCasualAcademic = function(changes, source) {
+	if (changes){
+		casualAcademicHasChanges = true;
+	}
+};
+var hotCasualAcademic = cm.initHotExcel($('#hotCasualAcademic')[0], excelHeaderCasualAcademic, excelColumnCasualAcademic, afterChangeCasualAcademic);
+
+//SAVE CasualAcademic IN EXCEL DATA
+$('#casualAcademicAddEditBtn').bind('click', function(){
+	if (!casualAcademicHasChanges){
+		alert('No changes were made on the data!');
+		return;
+	}
+	$.post(
+		'/manager/casualAcademicAddEdit',
+		JSON.stringify(casualAcademicData),
+		successLoadCasualAcademicList,
+		'json'
+	);
+});	
+});
+</script>

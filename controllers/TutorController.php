@@ -12,6 +12,7 @@ class TutorController {
 		$this->cCasual	 	= new courseCasual($this->db);
 		$this->cProfile 	= new casualProfile($this->db);
 		$this->cAcademic 	= new casualAcademic($this->db);
+		$this->vCAcademic 	= new viewCasualAcademic($this->db);
 		
         $f3->set('year', date('Y'));
 	}
@@ -74,6 +75,18 @@ class TutorController {
 			echo json_encode(array('failSession', 'Session expired!'));
 			die();
 		}
+	}
+	
+	function f3RecToArr($arr, $fields, $extraKeyVal=array()){
+		$recArr = $dataArr = array();
+		
+		foreach($arr as $rec){
+			foreach($fields as $column){
+				$dataArr[$column] = $rec->$column;
+			}
+			array_push($recArr,$dataArr);
+		}
+		return $recArr;
 	}
 	
 	function echoJson($arr){

@@ -4,7 +4,6 @@
 <div id="hotCourses"></div>
 <script>
 $(function(){
-console.log('a');
 var courseHasChanges=false;
 var courseData=[];
 function successLoadCourseList(data){
@@ -62,7 +61,7 @@ function isChecked(classN) {
 //SAVE COURSES IN EXCEL DATA
 $('#courseAddEditBtn').bind('click', function(){
 	$.post(
-		'/coordinator/courseCasualAddEditDel',
+		'/admin/courseAddEditDel',
 		JSON.stringify(courseData),
 		successLoadCourseList,
 		'json'

@@ -49,6 +49,7 @@
 			</div>
 		</form>
 		<div class="hotZoom row" id="hotConfigureCourse"></div>
+		<div class="btn btn-sm btn-info pull-right" id="addRowCourseBtn">Add New Row</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -60,27 +61,24 @@
 
 <script>
 $(function(){
+//ADD EMPTY ROW IN EXCEL
+$('#addRowCourseBtn').bind('click', function(){
+	cCasualData.push({});
+	hotCourses.updateSettings({
+        columns: casualColumn
+    });
+	hotCourses.loadData(cCasualData);
+	//hotCourses.render();
+});
 //SAVE COURSES IN EXCEL DATA
 $('#modalConfigureCourseBtn').bind('click', function(){
 	if (!courseCasualHasChanges){
 		alert('No changes made on the data!');
 		return;
 	}
-	var postData = _.map(cCasualData, function(cCObj){
-		return {
-			'courseCasualLongId':cCObj.courseCasualLongId, 
-			'lecturer':cCObj.lecturer, 
-			'teachingMethod':cCObj.teachingMethod, 
-			'hours':cCObj.hours, 
-			'rateCode':cCObj.rateCode, 
-			'hourRate':cCObj.hourRate, 
-			'cost':(cCObj.hours * cCObj.hourRate).toFixed(2), 
-			'delete':cCObj.delete
-		}
-	});
 	$.post(
 		'/coordinator/courseCasualAddEditDel/'+courseLongIdVal,
-		JSON.stringify(postData),
+		JSON.stringify(cCasualData),
 		successLoadCourseCasualList,
 		'json'
 	);
@@ -88,6 +86,7 @@ $('#modalConfigureCourseBtn').bind('click', function(){
 });
 
 var courseCasualHasChanges=false;
+var casualColumn = [];
 var casualData = [];
 var cCasualData = [];
 var courseLongIdVal = '';
@@ -170,18 +169,19 @@ var successLoadCourseCasualList = function(data){
 	if (data.length == 0){
 		data = [{}];
 	}
+	casualColumn=[
+		//{data:"lecturer",width: 20, type: 'dropdown', source:[]},
+		{data:"lecturer",width: 20, editor: 'select',selectOptions: _.fromPairs(_.map(casualData, i => [i.email, i.fname +' '+ i.lname]))},
+		{data:"teachingMethod",width: 20},
+		{data:"hours",width: 10, type:'numeric'},
+		{data:"rateCode",width: 20, editor: 'select',selectOptions: rateCodeObj},
+		{data:"hourRate",width: 20, editor: 'select',selectOptions: hourlyRateObj},
+		{data:"cost",width: 10, type:'numeric', format: '$0.00', readOnly: true},
+		{data:'subTotal',width:20, type:'numeric', format: '$0.00', readOnly: true},
+		{data:'delete',width:20, type: 'checkbox'}
+	]
 	hotCourses.updateSettings({
-        columns: [
-			//{data:"lecturer",width: 20, type: 'dropdown', source:[]},
-			{data:"lecturer",width: 20, editor: 'select',selectOptions: _.fromPairs(_.map(casualData, i => [i.email, i.name]))},
-			{data:"teachingMethod",width: 20},
-			{data:"hours",width: 10, type:'numeric'},
-			{data:"rateCode",width: 20, editor: 'select',selectOptions: rateCodeObj},
-			{data:"hourRate",width: 20, editor: 'select',selectOptions: hourlyRateObj},
-			{data:"cost",width: 10, type:'numeric', format: '$0.00', readOnly: true},
-			{data:'subTotal',width:20, type:'numeric', format: '$0.00', readOnly: true},
-			{data:'delete',width:20, type: 'checkbox'}
-		]
+        columns: casualColumn
     });
 	var totalCost = 0;
 	_.each(data, function(obj){
