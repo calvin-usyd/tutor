@@ -1,0 +1,44 @@
+<div class="modal fade" id="modalCasualList" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Casual List</h4>
+      </div>
+      <div class="modal-body">
+		<div class="hotZoom row" id="hotCasualList"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(function(){
+var casualColumn = [
+	{data:"fname",width: 20, readOnly: true},
+	{data:"lname",width: 20, readOnly: true},
+	{data:"email",width: 20, readOnly: true}
+],
+excelHeaderCasual=[
+	"First Name",
+	"Last Name",
+	"Email"
+]
+;
+
+var hotCasualList = cm.initHotExcel($('#hotCasualList')[0], excelHeaderCasual, casualColumn, null);
+
+var successLoadCasualList = function(data){
+	hotCasualList.loadData(data);
+}
+
+$.post(
+	'/coordinator/casualList',
+	null,
+	successLoadCasualList,
+	'json'
+);
+});
+</script>

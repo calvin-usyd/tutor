@@ -12,6 +12,7 @@
     <div class="form-group">
       <label class="col-lg-3 control-label">First Name</label>
       <div class="col-lg-9">
+        <input type="hidden" name="position" value="">
         <input type="text" class="form-control" name="fname" placeholder="First Name" required>
       </div>
     </div>
@@ -42,19 +43,15 @@
     <div class="form-group">
       <label class="col-lg-3 control-label">Position</label>
       <div class="col-lg-9">
-        <select class="form-control" name="position" required>
-			<option value="">Please select</option>
-			<option value="admin">Admin</option>
-			<option value="manager">Manager</option>
-			<option value="coordinator">Coordinator</option>
-			<option value="casual">Casual</option>
-		</select>
+		<div type="submit" class="btn btn-primary" onclick="submitForm('casual')">Casual</div>
+		<div type="submit" class="btn btn-primary" onclick="submitForm('coordinator')">Coordinator</div>
+		<div type="submit" class="btn btn-primary" onclick="submitForm('manager')">Manager</div>
+		<div type="submit" class="btn btn-primary" onclick="submitForm('admin')">Admin</div>
       </div>
     </div>
 	<div class="form-group">
       <div class="col-lg-9 col-lg-offset-3">
         <button type="reset" class="btn btn-default">Cancel</button>
-        <button type="submit" class="btn btn-primary">Submit</button>
         <br/><br/><a href="/login" class="text-primary">I already have account, go to Sign In page</a>
 		<br/><br/><a href="/" class="text-warning">Back to main page</a>
       </div>
@@ -63,3 +60,24 @@
 </form>
 </div>
 </div>
+<script>
+function submitForm(po){
+	$('input[name=position]').val(po);
+	$('form').submit();
+}
+$('form').submit(function(event){
+	if ($('input[name=email]').val() =='' 
+		|| $('input[name=password]').val() =='' 
+		|| $('input[name=confirmPassword]').val() =='' 
+		|| $('input[name=fname]').val() =='' 
+		|| $('input[name=lname]').val() =='' 
+		|| $('input[name=position]').val() ==''
+	){
+		event.preventDefault();
+	}else{
+		if (!confirm('Are you you want to register as '+$('input[name=position]').val())){
+			event.preventDefault();
+		}
+	}
+});
+</script>

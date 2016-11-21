@@ -48,9 +48,21 @@
 			  </div>
 			</div>
 			<div class="form-group">
+			  <label class="col-lg-4 control-label">Phone Extension</label>
+			  <div class="col-lg-8">
+				<input type="text" class="form-control" name="phoneExtension" placeholder="Phone Extension">
+			  </div>
+			</div>
+			<div class="form-group">
 			  <label class="col-lg-4 control-label">Email</label>
 			  <div class="col-lg-8">
 				<input type="email" class="form-control" name="email" placeholder="Email" disabled>
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label class="col-lg-4 control-label">Position</label>
+			  <div class="col-lg-8">
+				<input type="email" class="form-control" name="position" placeholder="Position" disabled>
 			  </div>
 			</div>
 			<div class="form-group">
@@ -103,11 +115,12 @@ $(function(){
 		url:'/profile/view',
 		dataType: 'json',
 		success: function(json){
-			//console.log(json);
 			cm.setInVal(id, 'id', json['id']);
 			cm.setInVal(id, 'fname', json['fname']);
 			cm.setInVal(id, 'lname', json['lname']);
 			cm.setInVal(id, 'email', json['email']);
+			cm.setInVal(id, 'position', json['position']);
+			cm.setInVal(id, 'phoneExtension', json['phoneExtension']);
 		}
 	});
 	//cm.popUp(id);
@@ -135,18 +148,26 @@ $(function(){
 		}
 	});
 	
+	function profileEditCompleted(json){
+		console.log(json);
+		if (json.length > 0){
+			cm.alertModal(json[0], json[1]);
+		}
+	}
+	
 	$('#modalProfileBtn').bind('click', function(){
 		var id = '#modalProfile';
 		var postData = {
 			fname:cm.inVal(id, 'fname'),
 			lname:cm.inVal(id, 'lname'),
 			email:cm.inVal(id, 'email'),
+			position:cm.inVal(id, 'position'),
+			phoneExtension:cm.inVal(id, 'phoneExtension'),
 			changePassword:cm.inVal(id, 'changePassword'),
 			currentPassword:cm.inVal(id, 'currentPassword'),
 			newPassword:cm.inVal(id, 'newPassword'),
 			confirmNewPassword:cm.inVal(id, 'confirmNewPassword')
 		};
-		console.log(postData);
 		if (postData['newPassword'] != postData['confirmNewPassword']){
 			cm.alertModal('Danger','New password and confirm new password are not same!');
 		}else{
@@ -159,9 +180,5 @@ $(function(){
 		}
 	});
 	
-	function profileEditCompleted(json){
-		if (json.length > 0)
-			cm.alertModal(json[0], json[1]);
-	}
 });
 </script>

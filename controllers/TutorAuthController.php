@@ -22,13 +22,14 @@ class TutorAuthController extends TutorController{
 				$email = $result[0]['email'];
 				$fname = $result[0]['fname'];
 				$lname = $result[0]['lname'];
-				$approved = $result[0]['approved'];
+				$phoneExtension = $result[0]['phoneExtension'];
 				
 				$f3->set('SESSION.user', $cred);/*email or id*/
 				$f3->set('SESSION.email', $email);
 				$f3->set('SESSION.fname', $fname);
 				$f3->set('SESSION.lname', $lname);
 				$f3->set('SESSION.position', $position);
+				$f3->set('SESSION.phoneExtension', $phoneExtension);
 				
 				if ($position == 'admin' && $approved != '1'){
 					$f3->set('warn_message', 'Waiting approval from calvin (calvin.chiew@sydney.edu.au)');
@@ -86,9 +87,10 @@ class TutorAuthController extends TutorController{
 				$f3->set('SESSION.lname', $this->users->lname);
 				$f3->set('SESSION.email', $this->users->email);
 				$f3->set('SESSION.position', $this->users->position);
+				$f3->set('SESSION.phoneExtension', $this->users->phoneExtension);
 				
 				if ($this->users->position == 'admin' && $this->users->approved != '1'){
-					$f3->set('warn_message', 'Your registration has been received! Waiting approval from calvin (calvin.chiew@sydney.edu.au)');//CALVIN MUST SET THE POSITION TO 'admin'
+					$f3->set('warn_message', 'Your registration has been received! Waiting approval from calvin (calvin.chiew@sydney.edu.au)');//CALVIN MUST SET THE approved TO '1'
 				
 					$this->alertRegistration($f3, $f3->get('POST.email'), $f3->get('POST.fname'), $f3->get('POST.lname'));
 				}else{

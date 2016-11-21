@@ -24,7 +24,7 @@
 		</div>
 		<form class="form-horizontal">
 			<div class="form-group">
-			  <label class="col-lg-4 control-label">Site Name</label>
+			  <label class="col-lg-4 control-label">Session</label>
 			  <div class="col-lg-6">
 				<div class="form-control" id="siteName"></div>
 			  </div>
@@ -36,7 +36,7 @@
 			  </div>
 			</div>
 			<div class="form-group">
-			  <label class="col-lg-4 control-label">Unit Of Study</label>
+			  <label class="col-lg-4 control-label">Code</label>
 			  <div class="col-lg-6">
 				<div class="form-control" id="unitOfStudy"></div>
 			  </div>
@@ -48,8 +48,13 @@
 			  </div>
 			</div>
 		</form>
+		<div class="row">
+		<div class="col-lg-12 col-xs-12">
+			<div class="btn btn-sm btn-default pull-right" id="addRowCourseBtn">Add New Row</div>
+			<div class="btn btn-sm btn-info pull-right" data-toggle="modal" data-target="#modalReferences">Pay Refererences</div>
+		</div>
+		</div>
 		<div class="hotZoom row" id="hotConfigureCourse"></div>
-		<div class="btn btn-sm btn-info pull-right" id="addRowCourseBtn">Add New Row</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -58,7 +63,7 @@
     </div>
   </div>
 </div>
-
+<include href="modalReferences.htm"/>
 <script>
 $(function(){
 //ADD EMPTY ROW IN EXCEL
@@ -91,11 +96,11 @@ var casualData = [];
 var cCasualData = [];
 var courseLongIdVal = '';
 var hourlyRateObj = {
-	 '54.67':'AO1',
-	 '45.73':'AO2',
+	 '54.67':'AO1/MO4',
+	 '45.73':'AO2/MO5',
 	  '64.1':'MO3',
-	 '54.67':'MO4',	
-	 '45.73':'MO5',	
+	// '54.67':'MO4',	
+	 //'45.73':'MO5',	
 	'320.37':'PO1',	
 	'256.31':'PO2',	
 	'192.23':'PO3',	
@@ -106,19 +111,20 @@ var hourlyRateObj = {
 	 '91.41':'TU4'
 }
 var rateCodeObj = {
-	'AO1': '54.67',
-	'AO2': '45.73',
-	'MO3':  '64.1',
-	'MO4': '54.67',	
-	'MO5': '45.73',	
-	'PO1':'320.37',	
-	'PO2':'256.31',	
-	'PO3':'192.23',	
-	'PO4':'128.16',	
-	'TU1':'163.97',	
-	'TU2': '137.1',	
-	'TU3':'109.36',	
-	'TU4': '91.41'
+	'AO1/DE1': 'With PhD',
+	'AO2/DE2': 'Without PhD',
+	'MO3':  'Supervising Examiner',
+	'MO4': 'Routine (standard) Marking',	
+	'MO5': 'Routine (standard) Marking',	
+	'PO1':'Distinguished Visiting scholar',	
+	'PO2':'Significant responsibility',	
+	'PO2':'Developed lecture',	
+	'PO3':'Standard lecture',	
+	'PO4':'Repeat lecture',	
+	'TU1':'Tutorial rate',	
+	'TU2': 'Tutorial rate',	
+	'TU3':'Repeat tutorial rate',	
+	'TU4': 'Repeat tutorial rate'
 }
 var
 excelHeaderCourseCasual=[
